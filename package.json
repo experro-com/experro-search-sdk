@@ -1,0 +1,19 @@
+{
+  "name": "@experro/sdk",
+  "version": "1.0.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/experro-com/experro-search-sdk.git"
+  },
+  "files": [
+    "dist",
+    "LICENSE.txt",
+    "README.md"
+  ],
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "types": "./dist/index.d.mts"
+    }
+  }
+}
