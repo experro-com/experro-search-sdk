@@ -17,7 +17,7 @@ declare class ExperroClient {
 
 declare class Search {
     constructor();
-    private expFetch;
+    private fetch;
     search(query: string, options?: {
         filters?: Record<string, any>;
         sort_by?: string;
@@ -30,6 +30,7 @@ declare class Search {
             filters: Record<string, any>;
             sort_by: string;
             limit: string;
+            skip: string;
             start: number;
             end: any;
             total: any;
@@ -52,6 +53,7 @@ declare class Search {
             filters: Record<string, any>;
             sort_by: string;
             limit: string;
+            skip: string;
             start: number;
             end: any;
             total: any;
@@ -67,13 +69,14 @@ declare class Search {
         facets: any[];
         records: any[];
     }>;
-    removeFilter(key: string): Promise<{
+    removeFilter(key: string, value: any): Promise<{
         _meta_: any;
         search_metadata: {
             query: string;
             filters: Record<string, any>;
             sort_by: string;
             limit: string;
+            skip: string;
             start: number;
             end: any;
             total: any;
@@ -96,6 +99,7 @@ declare class Search {
             filters: Record<string, any>;
             sort_by: string;
             limit: string;
+            skip: string;
             start: number;
             end: any;
             total: any;
@@ -118,6 +122,7 @@ declare class Search {
             filters: Record<string, any>;
             sort_by: string;
             limit: string;
+            skip: string;
             start: number;
             end: any;
             total: any;
@@ -140,6 +145,7 @@ declare class Search {
             filters: Record<string, any>;
             sort_by: string;
             limit: string;
+            skip: string;
             start: number;
             end: any;
             total: any;
@@ -162,6 +168,7 @@ declare class Search {
             filters: Record<string, any>;
             sort_by: string;
             limit: string;
+            skip: string;
             start: number;
             end: any;
             total: any;
@@ -184,6 +191,7 @@ declare class Search {
             filters: Record<string, any>;
             sort_by: string;
             limit: string;
+            skip: string;
             start: number;
             end: any;
             total: any;
