@@ -209,8 +209,19 @@ declare class Search {
     }>;
 }
 
+declare class Autocomplete {
+    private state;
+    constructor();
+    private resetState;
+    private fetch;
+    search(query: string): Promise<any>;
+    searchSuggestions(query: string): Promise<any>;
+    searchProducts(query: string): Promise<any>;
+}
+
 declare const Experro: ExperroClient;
 declare const ExperroSearch: Search;
+declare const ExperroAutocomplete: Autocomplete;
 declare const ExperroAnalytics: Analytics;
 
-export { Experro, ExperroAnalytics, ExperroSearch };
+export { Experro, ExperroAnalytics, ExperroAutocomplete, ExperroSearch };
