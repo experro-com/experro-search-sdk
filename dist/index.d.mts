@@ -213,6 +213,8 @@ declare class Autocomplete {
     private state;
     constructor();
     private resetState;
+    private getRecentSearches;
+    private saveRecentSearchTerm;
     private fetch;
     search(query: string): Promise<any>;
     searchSuggestions(query: string): Promise<any>;
