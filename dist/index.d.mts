@@ -327,7 +327,12 @@ declare class ExperroClient {
 
 declare class Search {
     private keyConversion;
+    private apiMiddleware;
+    private scrollHandler;
     constructor();
+    private resetState;
+    private getDebounceTime;
+    private fetchData;
     private fetch;
     search(query: string, options?: {
         filters?: Record<string, any>;
@@ -337,16 +342,12 @@ declare class Search {
         limit?: string;
     }): Promise<{
         search_metadata: {
-            skip: string;
-            limit: string;
-            query: string;
-            filters: Record<string, string[]>;
-            sort_by: string;
             start: number;
             end: any;
             total: any;
             page: number;
             x_request_id: string;
+            did_you_mean: never[];
             is_from_fallback: any;
         };
         state: {
@@ -358,19 +359,16 @@ declare class Search {
         };
         facets: any[];
         records: any[];
+        banners: any;
     }>;
     applyFilter(key: string, value: any): Promise<{
         search_metadata: {
-            skip: string;
-            limit: string;
-            query: string;
-            filters: Record<string, string[]>;
-            sort_by: string;
             start: number;
             end: any;
             total: any;
             page: number;
             x_request_id: string;
+            did_you_mean: never[];
             is_from_fallback: any;
         };
         state: {
@@ -382,19 +380,16 @@ declare class Search {
         };
         facets: any[];
         records: any[];
+        banners: any;
     }>;
     removeFilter(key: string, value: any): Promise<{
         search_metadata: {
-            skip: string;
-            limit: string;
-            query: string;
-            filters: Record<string, string[]>;
-            sort_by: string;
             start: number;
             end: any;
             total: any;
             page: number;
             x_request_id: string;
+            did_you_mean: never[];
             is_from_fallback: any;
         };
         state: {
@@ -406,19 +401,16 @@ declare class Search {
         };
         facets: any[];
         records: any[];
+        banners: any;
     }>;
     clearFilters(): Promise<{
         search_metadata: {
-            skip: string;
-            limit: string;
-            query: string;
-            filters: Record<string, string[]>;
-            sort_by: string;
             start: number;
             end: any;
             total: any;
             page: number;
             x_request_id: string;
+            did_you_mean: never[];
             is_from_fallback: any;
         };
         state: {
@@ -430,19 +422,16 @@ declare class Search {
         };
         facets: any[];
         records: any[];
+        banners: any;
     }>;
     applySort(sortBy: string): Promise<{
         search_metadata: {
-            skip: string;
-            limit: string;
-            query: string;
-            filters: Record<string, string[]>;
-            sort_by: string;
             start: number;
             end: any;
             total: any;
             page: number;
             x_request_id: string;
+            did_you_mean: never[];
             is_from_fallback: any;
         };
         state: {
@@ -454,19 +443,16 @@ declare class Search {
         };
         facets: any[];
         records: any[];
+        banners: any;
     }>;
     setPage(page: string | number): Promise<{
         search_metadata: {
-            skip: string;
-            limit: string;
-            query: string;
-            filters: Record<string, string[]>;
-            sort_by: string;
             start: number;
             end: any;
             total: any;
             page: number;
             x_request_id: string;
+            did_you_mean: never[];
             is_from_fallback: any;
         };
         state: {
@@ -478,19 +464,16 @@ declare class Search {
         };
         facets: any[];
         records: any[];
+        banners: any;
     }>;
     setPageSize(pageSize: string | number): Promise<{
         search_metadata: {
-            skip: string;
-            limit: string;
-            query: string;
-            filters: Record<string, string[]>;
-            sort_by: string;
             start: number;
             end: any;
             total: any;
             page: number;
             x_request_id: string;
+            did_you_mean: never[];
             is_from_fallback: any;
         };
         state: {
@@ -502,19 +485,16 @@ declare class Search {
         };
         facets: any[];
         records: any[];
+        banners: any;
     }>;
     reset(query?: string): Promise<{
         search_metadata: {
-            skip: string;
-            limit: string;
-            query: string;
-            filters: Record<string, string[]>;
-            sort_by: string;
             start: number;
             end: any;
             total: any;
             page: number;
             x_request_id: string;
+            did_you_mean: never[];
             is_from_fallback: any;
         };
         state: {
@@ -526,20 +506,28 @@ declare class Search {
         };
         facets: any[];
         records: any[];
+        banners: any;
     }>;
 }
 
 declare class Autocomplete {
     private keyConversion;
     private state;
+    private apiMiddleware;
+    private lastResults;
+    private lastSuggestionResults;
+    private lastProductResults;
     constructor();
     private resetState;
+    private validateAutocomplete;
     private getRecentSearches;
     private saveRecentSearchTerm;
+    private getDebounceTime;
+    private fetchData;
     private fetch;
-    search(query: string): Promise<any>;
-    searchSuggestions(query: string): Promise<any>;
-    searchProducts(query: string): Promise<any>;
+    search(query: string): Promise<Record<string, any>>;
+    searchSuggestions(query: string): Promise<Record<string, any>>;
+    searchProducts(query: string): Promise<Record<string, any>>;
 }
 
 declare const Experro: ExperroClient;
