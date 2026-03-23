@@ -58,6 +58,7 @@ declare class Analytics {
     trackCartViewed({ total_value, total_quantity, cart_id, base_amount, cart_amount, discount_amount, products }: any): Promise<void>;
     trackCheckoutInitiated({ total_value, cart_id, total_quantity, products }: any): Promise<void>;
     trackCheckoutCompleted({ total_value, cart_id, order_id, total_quantity, subtotal_tax, currency_code, base_handling_cost, base_shipping_cost, discount_amount, handling_cost_ex_tax, shipping_cost_ex_tax, subtotal_ex_tax, total_ex_tax, wrapping_cost_ex_tax, payment_method, shipping_method, products, }: any): Promise<void>;
+    sendCheckoutAnalytics(payload: Record<string, any>): Promise<void>;
 }
 
 type RenameKeys<T, R extends Record<string, keyof T>> = Omit<T, R[keyof R]> & {
@@ -314,6 +315,7 @@ type TConfig = {
 interface GetConfigProps {
     base: string;
     signal?: AbortSignal;
+    version?: string;
 }
 declare class ExperroClient {
     hydrate({ config, system, search }: {
@@ -321,7 +323,7 @@ declare class ExperroClient {
         config?: Record<string, any>;
         search?: Record<string, any>;
     }): void;
-    Init({ base, signal }: GetConfigProps): Promise<Record<string, any>>;
+    Init({ base, signal, version }: GetConfigProps): Promise<Record<string, any>>;
     GetExpConfig(): TConfig;
 }
 
@@ -360,6 +362,7 @@ declare class Search {
         facets: any[];
         records: any[];
         banners: any;
+        layoutBanners: any[];
     }>;
     applyFilter(key: string, value: any): Promise<{
         search_metadata: {
@@ -381,6 +384,7 @@ declare class Search {
         facets: any[];
         records: any[];
         banners: any;
+        layoutBanners: any[];
     }>;
     removeFilter(key: string, value: any): Promise<{
         search_metadata: {
@@ -402,6 +406,7 @@ declare class Search {
         facets: any[];
         records: any[];
         banners: any;
+        layoutBanners: any[];
     }>;
     clearFilters(): Promise<{
         search_metadata: {
@@ -423,6 +428,7 @@ declare class Search {
         facets: any[];
         records: any[];
         banners: any;
+        layoutBanners: any[];
     }>;
     applySort(sortBy: string): Promise<{
         search_metadata: {
@@ -444,6 +450,7 @@ declare class Search {
         facets: any[];
         records: any[];
         banners: any;
+        layoutBanners: any[];
     }>;
     setPage(page: string | number): Promise<{
         search_metadata: {
@@ -465,6 +472,7 @@ declare class Search {
         facets: any[];
         records: any[];
         banners: any;
+        layoutBanners: any[];
     }>;
     setPageSize(pageSize: string | number): Promise<{
         search_metadata: {
@@ -486,6 +494,7 @@ declare class Search {
         facets: any[];
         records: any[];
         banners: any;
+        layoutBanners: any[];
     }>;
     reset(query?: string): Promise<{
         search_metadata: {
@@ -507,6 +516,7 @@ declare class Search {
         facets: any[];
         records: any[];
         banners: any;
+        layoutBanners: any[];
     }>;
 }
 
