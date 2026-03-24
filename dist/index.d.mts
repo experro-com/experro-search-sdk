@@ -9,7 +9,7 @@ declare class Analytics {
     updateUserDetails(userDetails: any): Promise<true | undefined>;
     trackPageView(): void;
     trackEvent({ event_name, count, sum, dur, event_data }: any): Promise<void>;
-    trackProductSearched({ search_location, search_term, no_of_results, sku, products_detail, search_source, used_suggestion, facets, request_id, page_depth, }: {
+    trackProductSearched({ search_location, search_term, no_of_results, sku, products_detail, search_source, used_suggestion, facets, request_id, page_depth, is_from_fallback, }: {
         search_location?: string;
         search_term: string | undefined;
         no_of_results: number | undefined;
@@ -20,6 +20,7 @@ declare class Analytics {
         facets?: any;
         request_id?: string;
         page_depth?: string;
+        is_from_fallback?: boolean;
     }): Promise<void>;
     trackAcImpression({ no_of_results, ac_source, search_term, items }: any): Promise<void>;
     trackAcClick({ used_suggestion, ac_source, search_term }: any): Promise<void>;
@@ -224,18 +225,10 @@ type Tautocomplete = {
     };
 };
 type TConfig = {
-    layout: {
-        desktop_view: TLayout;
-        mobile_view: TLayout;
-    };
-    search_results: {
-        desktop_view: TsearchResult;
-        mobile_view: TsearchResult;
-    };
-    autocomplete: {
-        desktop_view: Tautocomplete;
-        mobile_view: Tautocomplete;
-    };
+    viewport: "desktop_view" | "mobile_view";
+    layout: TLayout;
+    search_results: TsearchResult;
+    autocomplete: Tautocomplete;
     user_settings: {
         is_fallback_analytics_enabled?: false;
         recent_search_zero_result_enabled?: true;
@@ -316,6 +309,7 @@ interface GetConfigProps {
     base: string;
     signal?: AbortSignal;
     version?: string;
+    userAgent?: string;
 }
 declare class ExperroClient {
     hydrate({ config, system, search }: {
@@ -323,7 +317,7 @@ declare class ExperroClient {
         config?: Record<string, any>;
         search?: Record<string, any>;
     }): void;
-    Init({ base, signal, version }: GetConfigProps): Promise<Record<string, any>>;
+    Init({ base, signal, version, userAgent }: GetConfigProps): Promise<Record<string, any>>;
     GetExpConfig(): TConfig;
 }
 
@@ -343,6 +337,13 @@ declare class Search {
         skip?: string;
         limit?: string;
     }): Promise<{
+        state: {
+            query: string;
+            filters: Record<string, string[]>;
+            sort_by: string;
+            skip: string;
+            limit: string;
+        };
         search_metadata: {
             start: number;
             end: any;
@@ -351,13 +352,6 @@ declare class Search {
             x_request_id: string;
             did_you_mean: never[];
             is_from_fallback: any;
-        };
-        state: {
-            query: string;
-            filters: Record<string, string[]>;
-            sort_by: string;
-            skip: string;
-            limit: string;
         };
         facets: any[];
         records: any[];
@@ -365,6 +359,13 @@ declare class Search {
         layoutBanners: any[];
     }>;
     applyFilter(key: string, value: any): Promise<{
+        state: {
+            query: string;
+            filters: Record<string, string[]>;
+            sort_by: string;
+            skip: string;
+            limit: string;
+        };
         search_metadata: {
             start: number;
             end: any;
@@ -373,13 +374,6 @@ declare class Search {
             x_request_id: string;
             did_you_mean: never[];
             is_from_fallback: any;
-        };
-        state: {
-            query: string;
-            filters: Record<string, string[]>;
-            sort_by: string;
-            skip: string;
-            limit: string;
         };
         facets: any[];
         records: any[];
@@ -387,6 +381,13 @@ declare class Search {
         layoutBanners: any[];
     }>;
     removeFilter(key: string, value: any): Promise<{
+        state: {
+            query: string;
+            filters: Record<string, string[]>;
+            sort_by: string;
+            skip: string;
+            limit: string;
+        };
         search_metadata: {
             start: number;
             end: any;
@@ -395,13 +396,6 @@ declare class Search {
             x_request_id: string;
             did_you_mean: never[];
             is_from_fallback: any;
-        };
-        state: {
-            query: string;
-            filters: Record<string, string[]>;
-            sort_by: string;
-            skip: string;
-            limit: string;
         };
         facets: any[];
         records: any[];
@@ -409,6 +403,13 @@ declare class Search {
         layoutBanners: any[];
     }>;
     clearFilters(): Promise<{
+        state: {
+            query: string;
+            filters: Record<string, string[]>;
+            sort_by: string;
+            skip: string;
+            limit: string;
+        };
         search_metadata: {
             start: number;
             end: any;
@@ -417,13 +418,6 @@ declare class Search {
             x_request_id: string;
             did_you_mean: never[];
             is_from_fallback: any;
-        };
-        state: {
-            query: string;
-            filters: Record<string, string[]>;
-            sort_by: string;
-            skip: string;
-            limit: string;
         };
         facets: any[];
         records: any[];
@@ -431,6 +425,13 @@ declare class Search {
         layoutBanners: any[];
     }>;
     applySort(sortBy: string): Promise<{
+        state: {
+            query: string;
+            filters: Record<string, string[]>;
+            sort_by: string;
+            skip: string;
+            limit: string;
+        };
         search_metadata: {
             start: number;
             end: any;
@@ -439,13 +440,6 @@ declare class Search {
             x_request_id: string;
             did_you_mean: never[];
             is_from_fallback: any;
-        };
-        state: {
-            query: string;
-            filters: Record<string, string[]>;
-            sort_by: string;
-            skip: string;
-            limit: string;
         };
         facets: any[];
         records: any[];
@@ -453,6 +447,13 @@ declare class Search {
         layoutBanners: any[];
     }>;
     setPage(page: string | number): Promise<{
+        state: {
+            query: string;
+            filters: Record<string, string[]>;
+            sort_by: string;
+            skip: string;
+            limit: string;
+        };
         search_metadata: {
             start: number;
             end: any;
@@ -461,13 +462,6 @@ declare class Search {
             x_request_id: string;
             did_you_mean: never[];
             is_from_fallback: any;
-        };
-        state: {
-            query: string;
-            filters: Record<string, string[]>;
-            sort_by: string;
-            skip: string;
-            limit: string;
         };
         facets: any[];
         records: any[];
@@ -475,6 +469,13 @@ declare class Search {
         layoutBanners: any[];
     }>;
     setPageSize(pageSize: string | number): Promise<{
+        state: {
+            query: string;
+            filters: Record<string, string[]>;
+            sort_by: string;
+            skip: string;
+            limit: string;
+        };
         search_metadata: {
             start: number;
             end: any;
@@ -483,13 +484,6 @@ declare class Search {
             x_request_id: string;
             did_you_mean: never[];
             is_from_fallback: any;
-        };
-        state: {
-            query: string;
-            filters: Record<string, string[]>;
-            sort_by: string;
-            skip: string;
-            limit: string;
         };
         facets: any[];
         records: any[];
@@ -497,6 +491,13 @@ declare class Search {
         layoutBanners: any[];
     }>;
     reset(query?: string): Promise<{
+        state: {
+            query: string;
+            filters: Record<string, string[]>;
+            sort_by: string;
+            skip: string;
+            limit: string;
+        };
         search_metadata: {
             start: number;
             end: any;
@@ -505,13 +506,6 @@ declare class Search {
             x_request_id: string;
             did_you_mean: never[];
             is_from_fallback: any;
-        };
-        state: {
-            query: string;
-            filters: Record<string, string[]>;
-            sort_by: string;
-            skip: string;
-            limit: string;
         };
         facets: any[];
         records: any[];
