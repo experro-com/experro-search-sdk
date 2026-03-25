@@ -1,6 +1,6 @@
 {
   "name": "@experro/sdk",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "repository": {
     "type": "git",
     "url": "https://github.com/experro-com/experro-search-sdk.git"

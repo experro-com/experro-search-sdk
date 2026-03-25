@@ -312,10 +312,11 @@ interface GetConfigProps {
     userAgent?: string;
 }
 declare class ExperroClient {
-    hydrate({ config, system, search }: {
+    hydrate({ config, system, search, collection }: {
         system: Record<string, any>;
         config?: Record<string, any>;
         search?: Record<string, any>;
+        collection?: Record<string, any>;
     }): void;
     Init({ base, signal, version, userAgent }: GetConfigProps): Promise<Record<string, any>>;
     GetExpConfig(): TConfig;
@@ -338,11 +339,12 @@ declare class Search {
         limit?: string;
     }): Promise<{
         state: {
-            query: string;
-            filters: Record<string, string[]>;
+            filters: Record<string, any[]>;
             sort_by: string;
             skip: string;
             limit: string;
+        } & {
+            query: string;
         };
         search_metadata: {
             start: number;
@@ -360,11 +362,12 @@ declare class Search {
     }>;
     applyFilter(key: string, value: any): Promise<{
         state: {
-            query: string;
-            filters: Record<string, string[]>;
+            filters: Record<string, any[]>;
             sort_by: string;
             skip: string;
             limit: string;
+        } & {
+            query: string;
         };
         search_metadata: {
             start: number;
@@ -382,11 +385,12 @@ declare class Search {
     }>;
     removeFilter(key: string, value: any): Promise<{
         state: {
-            query: string;
-            filters: Record<string, string[]>;
+            filters: Record<string, any[]>;
             sort_by: string;
             skip: string;
             limit: string;
+        } & {
+            query: string;
         };
         search_metadata: {
             start: number;
@@ -404,11 +408,12 @@ declare class Search {
     }>;
     clearFilters(): Promise<{
         state: {
-            query: string;
-            filters: Record<string, string[]>;
+            filters: Record<string, any[]>;
             sort_by: string;
             skip: string;
             limit: string;
+        } & {
+            query: string;
         };
         search_metadata: {
             start: number;
@@ -426,11 +431,12 @@ declare class Search {
     }>;
     applySort(sortBy: string): Promise<{
         state: {
-            query: string;
-            filters: Record<string, string[]>;
+            filters: Record<string, any[]>;
             sort_by: string;
             skip: string;
             limit: string;
+        } & {
+            query: string;
         };
         search_metadata: {
             start: number;
@@ -448,11 +454,12 @@ declare class Search {
     }>;
     setPage(page: string | number): Promise<{
         state: {
-            query: string;
-            filters: Record<string, string[]>;
+            filters: Record<string, any[]>;
             sort_by: string;
             skip: string;
             limit: string;
+        } & {
+            query: string;
         };
         search_metadata: {
             start: number;
@@ -470,11 +477,12 @@ declare class Search {
     }>;
     setPageSize(pageSize: string | number): Promise<{
         state: {
-            query: string;
-            filters: Record<string, string[]>;
+            filters: Record<string, any[]>;
             sort_by: string;
             skip: string;
             limit: string;
+        } & {
+            query: string;
         };
         search_metadata: {
             start: number;
@@ -492,11 +500,12 @@ declare class Search {
     }>;
     reset(query?: string): Promise<{
         state: {
-            query: string;
-            filters: Record<string, string[]>;
+            filters: Record<string, any[]>;
             sort_by: string;
             skip: string;
             limit: string;
+        } & {
+            query: string;
         };
         search_metadata: {
             start: number;
@@ -534,9 +543,219 @@ declare class Autocomplete {
     searchProducts(query: string): Promise<Record<string, any>>;
 }
 
+declare class Collection {
+    private keyConversion;
+    private apiMiddleware;
+    private scrollHandler;
+    constructor();
+    private resetState;
+    private getDebounceTime;
+    private fetchData;
+    private fetch;
+    search(collectionName: string, options?: {
+        filters?: Record<string, any>;
+        sort_by?: string;
+        page?: string;
+        skip?: string;
+        limit?: string;
+    }): Promise<{
+        state: {
+            filters: Record<string, any[]>;
+            sort_by: string;
+            skip: string;
+            limit: string;
+        } & {
+            slug: string;
+        };
+        search_metadata: {
+            start: number;
+            end: any;
+            total: any;
+            page: number;
+            x_request_id: string;
+            did_you_mean: never[];
+            is_from_fallback: any;
+        };
+        collection_content: any;
+        banners: any;
+        layoutBanners: any[];
+        records: any[];
+        facets: any[];
+    }>;
+    applyFilter(key: string, value: any): Promise<{
+        state: {
+            filters: Record<string, any[]>;
+            sort_by: string;
+            skip: string;
+            limit: string;
+        } & {
+            slug: string;
+        };
+        search_metadata: {
+            start: number;
+            end: any;
+            total: any;
+            page: number;
+            x_request_id: string;
+            did_you_mean: never[];
+            is_from_fallback: any;
+        };
+        collection_content: any;
+        banners: any;
+        layoutBanners: any[];
+        records: any[];
+        facets: any[];
+    }>;
+    removeFilter(key: string, value: any): Promise<{
+        state: {
+            filters: Record<string, any[]>;
+            sort_by: string;
+            skip: string;
+            limit: string;
+        } & {
+            slug: string;
+        };
+        search_metadata: {
+            start: number;
+            end: any;
+            total: any;
+            page: number;
+            x_request_id: string;
+            did_you_mean: never[];
+            is_from_fallback: any;
+        };
+        collection_content: any;
+        banners: any;
+        layoutBanners: any[];
+        records: any[];
+        facets: any[];
+    }>;
+    clearFilters(): Promise<{
+        state: {
+            filters: Record<string, any[]>;
+            sort_by: string;
+            skip: string;
+            limit: string;
+        } & {
+            slug: string;
+        };
+        search_metadata: {
+            start: number;
+            end: any;
+            total: any;
+            page: number;
+            x_request_id: string;
+            did_you_mean: never[];
+            is_from_fallback: any;
+        };
+        collection_content: any;
+        banners: any;
+        layoutBanners: any[];
+        records: any[];
+        facets: any[];
+    }>;
+    applySort(sortBy: string): Promise<{
+        state: {
+            filters: Record<string, any[]>;
+            sort_by: string;
+            skip: string;
+            limit: string;
+        } & {
+            slug: string;
+        };
+        search_metadata: {
+            start: number;
+            end: any;
+            total: any;
+            page: number;
+            x_request_id: string;
+            did_you_mean: never[];
+            is_from_fallback: any;
+        };
+        collection_content: any;
+        banners: any;
+        layoutBanners: any[];
+        records: any[];
+        facets: any[];
+    }>;
+    setPage(page: string | number): Promise<{
+        state: {
+            filters: Record<string, any[]>;
+            sort_by: string;
+            skip: string;
+            limit: string;
+        } & {
+            slug: string;
+        };
+        search_metadata: {
+            start: number;
+            end: any;
+            total: any;
+            page: number;
+            x_request_id: string;
+            did_you_mean: never[];
+            is_from_fallback: any;
+        };
+        collection_content: any;
+        banners: any;
+        layoutBanners: any[];
+        records: any[];
+        facets: any[];
+    }>;
+    setPageSize(pageSize: string | number): Promise<{
+        state: {
+            filters: Record<string, any[]>;
+            sort_by: string;
+            skip: string;
+            limit: string;
+        } & {
+            slug: string;
+        };
+        search_metadata: {
+            start: number;
+            end: any;
+            total: any;
+            page: number;
+            x_request_id: string;
+            did_you_mean: never[];
+            is_from_fallback: any;
+        };
+        collection_content: any;
+        banners: any;
+        layoutBanners: any[];
+        records: any[];
+        facets: any[];
+    }>;
+    reset(slug?: string): Promise<{
+        state: {
+            filters: Record<string, any[]>;
+            sort_by: string;
+            skip: string;
+            limit: string;
+        } & {
+            slug: string;
+        };
+        search_metadata: {
+            start: number;
+            end: any;
+            total: any;
+            page: number;
+            x_request_id: string;
+            did_you_mean: never[];
+            is_from_fallback: any;
+        };
+        collection_content: any;
+        banners: any;
+        layoutBanners: any[];
+        records: any[];
+        facets: any[];
+    }>;
+}
+
 declare const Experro: ExperroClient;
 declare const ExperroSearch: Search;
 declare const ExperroAutocomplete: Autocomplete;
 declare const ExperroAnalytics: Analytics;
+declare const ExperroCollection: Collection;
 
-export { Experro, ExperroAnalytics, ExperroAutocomplete, ExperroSearch };
+export { Experro, ExperroAnalytics, ExperroAutocomplete, ExperroCollection, ExperroSearch };
