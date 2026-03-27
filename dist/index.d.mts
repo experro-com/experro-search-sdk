@@ -54,6 +54,10 @@ declare class Analytics {
         request_id?: string;
         page_depth?: string;
     }): Promise<void>;
+    trackCollectionNotFound({ slug, normalisedSlug }: {
+        slug: string;
+        normalisedSlug: string;
+    }): Promise<void>;
     trackProductAddedToCart(param: any): Promise<void>;
     trackProductRemovedFromCart(param: any): Promise<void>;
     trackCartViewed({ total_value, total_quantity, cart_id, base_amount, cart_amount, discount_amount, products }: any): Promise<void>;
@@ -62,9 +66,6 @@ declare class Analytics {
     sendCheckoutAnalytics(payload: Record<string, any>): Promise<void>;
 }
 
-type RenameKeys<T, R extends Record<string, keyof T>> = Omit<T, R[keyof R]> & {
-    [K in keyof R]: T[R[K]];
-};
 type TLayout = {
     page_layout: {
         selected_facets_position: "top" | "left" | "right" | "default" | "none";
@@ -122,11 +123,7 @@ type TLayout = {
         };
     };
 };
-type TsearchResult = RenameKeys<TLayout, {
-    product_card_layout_meta: "product_card_layout";
-    product_grid_layout_meta: "product_grid_layout";
-    sort_options_meta: "sort_options";
-}> & {
+type TsearchResult = TLayout & {
     search_result_setting: {
         is_show_search_box_enabled: boolean;
         is_show_content_pages_enabled: boolean;
@@ -322,15 +319,170 @@ declare class ExperroClient {
     GetExpConfig(): TConfig;
 }
 
-declare class Search {
+type TypeLayout = "layout" | "search_results";
+declare class Layout {
+    activeModule: "collection" | "search_results" | "category";
+    activeConfigModule: TypeLayout;
+    getState: () => any;
+    setState: (state: any) => void;
+    private MODULE_CONFIG;
     private keyConversion;
     private apiMiddleware;
+    private getActiveModuleViewConfig;
     private scrollHandler;
-    constructor();
-    private resetState;
+    constructor(activeModule: "collection" | "search_results" | "category", activeConfigModule?: TypeLayout);
+    private getModuleConfig;
+    resetState(): Promise<void>;
     private getDebounceTime;
     private fetchData;
-    private fetch;
+    fetch(): Promise<{
+        state: any;
+        search_metadata: {
+            start: number;
+            end: any;
+            total: any;
+            page: number;
+            x_request_id: string;
+            did_you_mean: never[];
+            is_from_fallback: any;
+            redirect_url: any;
+        };
+        facets: any[];
+        collection_content: any;
+        records: any[];
+        banners: any;
+        layoutBanners: any[];
+    }>;
+    applyFilter(key: string, value: any): Promise<{
+        state: any;
+        search_metadata: {
+            start: number;
+            end: any;
+            total: any;
+            page: number;
+            x_request_id: string;
+            did_you_mean: never[];
+            is_from_fallback: any;
+            redirect_url: any;
+        };
+        facets: any[];
+        collection_content: any;
+        records: any[];
+        banners: any;
+        layoutBanners: any[];
+    }>;
+    removeFilter(key: string, value: any): Promise<{
+        state: any;
+        search_metadata: {
+            start: number;
+            end: any;
+            total: any;
+            page: number;
+            x_request_id: string;
+            did_you_mean: never[];
+            is_from_fallback: any;
+            redirect_url: any;
+        };
+        facets: any[];
+        collection_content: any;
+        records: any[];
+        banners: any;
+        layoutBanners: any[];
+    }>;
+    clearFilters(): Promise<{
+        state: any;
+        search_metadata: {
+            start: number;
+            end: any;
+            total: any;
+            page: number;
+            x_request_id: string;
+            did_you_mean: never[];
+            is_from_fallback: any;
+            redirect_url: any;
+        };
+        facets: any[];
+        collection_content: any;
+        records: any[];
+        banners: any;
+        layoutBanners: any[];
+    }>;
+    applySort(sortBy: string): Promise<{
+        state: any;
+        search_metadata: {
+            start: number;
+            end: any;
+            total: any;
+            page: number;
+            x_request_id: string;
+            did_you_mean: never[];
+            is_from_fallback: any;
+            redirect_url: any;
+        };
+        facets: any[];
+        collection_content: any;
+        records: any[];
+        banners: any;
+        layoutBanners: any[];
+    }>;
+    setPage(page: string | number): Promise<{
+        state: any;
+        search_metadata: {
+            start: number;
+            end: any;
+            total: any;
+            page: number;
+            x_request_id: string;
+            did_you_mean: never[];
+            is_from_fallback: any;
+            redirect_url: any;
+        };
+        facets: any[];
+        collection_content: any;
+        records: any[];
+        banners: any;
+        layoutBanners: any[];
+    }>;
+    setPageSize(pageSize: string | number): Promise<{
+        state: any;
+        search_metadata: {
+            start: number;
+            end: any;
+            total: any;
+            page: number;
+            x_request_id: string;
+            did_you_mean: never[];
+            is_from_fallback: any;
+            redirect_url: any;
+        };
+        facets: any[];
+        collection_content: any;
+        records: any[];
+        banners: any;
+        layoutBanners: any[];
+    }>;
+    reset(slug?: string): Promise<{
+        state: any;
+        search_metadata: {
+            start: number;
+            end: any;
+            total: any;
+            page: number;
+            x_request_id: string;
+            did_you_mean: never[];
+            is_from_fallback: any;
+            redirect_url: any;
+        };
+        facets: any[];
+        collection_content: any;
+        records: any[];
+        banners: any;
+        layoutBanners: any[];
+    }>;
+}
+
+declare class Search extends Layout {
+    constructor();
     search(query: string, options?: {
         filters?: Record<string, any>;
         sort_by?: string;
@@ -338,14 +490,7 @@ declare class Search {
         skip?: string;
         limit?: string;
     }): Promise<{
-        state: {
-            filters: Record<string, any[]>;
-            sort_by: string;
-            skip: string;
-            limit: string;
-        } & {
-            query: string;
-        };
+        state: any;
         search_metadata: {
             start: number;
             end: any;
@@ -354,169 +499,10 @@ declare class Search {
             x_request_id: string;
             did_you_mean: never[];
             is_from_fallback: any;
+            redirect_url: any;
         };
         facets: any[];
-        records: any[];
-        banners: any;
-        layoutBanners: any[];
-    }>;
-    applyFilter(key: string, value: any): Promise<{
-        state: {
-            filters: Record<string, any[]>;
-            sort_by: string;
-            skip: string;
-            limit: string;
-        } & {
-            query: string;
-        };
-        search_metadata: {
-            start: number;
-            end: any;
-            total: any;
-            page: number;
-            x_request_id: string;
-            did_you_mean: never[];
-            is_from_fallback: any;
-        };
-        facets: any[];
-        records: any[];
-        banners: any;
-        layoutBanners: any[];
-    }>;
-    removeFilter(key: string, value: any): Promise<{
-        state: {
-            filters: Record<string, any[]>;
-            sort_by: string;
-            skip: string;
-            limit: string;
-        } & {
-            query: string;
-        };
-        search_metadata: {
-            start: number;
-            end: any;
-            total: any;
-            page: number;
-            x_request_id: string;
-            did_you_mean: never[];
-            is_from_fallback: any;
-        };
-        facets: any[];
-        records: any[];
-        banners: any;
-        layoutBanners: any[];
-    }>;
-    clearFilters(): Promise<{
-        state: {
-            filters: Record<string, any[]>;
-            sort_by: string;
-            skip: string;
-            limit: string;
-        } & {
-            query: string;
-        };
-        search_metadata: {
-            start: number;
-            end: any;
-            total: any;
-            page: number;
-            x_request_id: string;
-            did_you_mean: never[];
-            is_from_fallback: any;
-        };
-        facets: any[];
-        records: any[];
-        banners: any;
-        layoutBanners: any[];
-    }>;
-    applySort(sortBy: string): Promise<{
-        state: {
-            filters: Record<string, any[]>;
-            sort_by: string;
-            skip: string;
-            limit: string;
-        } & {
-            query: string;
-        };
-        search_metadata: {
-            start: number;
-            end: any;
-            total: any;
-            page: number;
-            x_request_id: string;
-            did_you_mean: never[];
-            is_from_fallback: any;
-        };
-        facets: any[];
-        records: any[];
-        banners: any;
-        layoutBanners: any[];
-    }>;
-    setPage(page: string | number): Promise<{
-        state: {
-            filters: Record<string, any[]>;
-            sort_by: string;
-            skip: string;
-            limit: string;
-        } & {
-            query: string;
-        };
-        search_metadata: {
-            start: number;
-            end: any;
-            total: any;
-            page: number;
-            x_request_id: string;
-            did_you_mean: never[];
-            is_from_fallback: any;
-        };
-        facets: any[];
-        records: any[];
-        banners: any;
-        layoutBanners: any[];
-    }>;
-    setPageSize(pageSize: string | number): Promise<{
-        state: {
-            filters: Record<string, any[]>;
-            sort_by: string;
-            skip: string;
-            limit: string;
-        } & {
-            query: string;
-        };
-        search_metadata: {
-            start: number;
-            end: any;
-            total: any;
-            page: number;
-            x_request_id: string;
-            did_you_mean: never[];
-            is_from_fallback: any;
-        };
-        facets: any[];
-        records: any[];
-        banners: any;
-        layoutBanners: any[];
-    }>;
-    reset(query?: string): Promise<{
-        state: {
-            filters: Record<string, any[]>;
-            sort_by: string;
-            skip: string;
-            limit: string;
-        } & {
-            query: string;
-        };
-        search_metadata: {
-            start: number;
-            end: any;
-            total: any;
-            page: number;
-            x_request_id: string;
-            did_you_mean: never[];
-            is_from_fallback: any;
-        };
-        facets: any[];
+        collection_content: any;
         records: any[];
         banners: any;
         layoutBanners: any[];
@@ -543,15 +529,8 @@ declare class Autocomplete {
     searchProducts(query: string): Promise<Record<string, any>>;
 }
 
-declare class Collection {
-    private keyConversion;
-    private apiMiddleware;
-    private scrollHandler;
+declare class Collection extends Layout {
     constructor();
-    private resetState;
-    private getDebounceTime;
-    private fetchData;
-    private fetch;
     search(collectionName: string, options?: {
         filters?: Record<string, any>;
         sort_by?: string;
@@ -559,14 +538,7 @@ declare class Collection {
         skip?: string;
         limit?: string;
     }): Promise<{
-        state: {
-            filters: Record<string, any[]>;
-            sort_by: string;
-            skip: string;
-            limit: string;
-        } & {
-            slug: string;
-        };
+        state: any;
         search_metadata: {
             start: number;
             end: any;
@@ -575,180 +547,13 @@ declare class Collection {
             x_request_id: string;
             did_you_mean: never[];
             is_from_fallback: any;
+            redirect_url: any;
         };
+        facets: any[];
         collection_content: any;
+        records: any[];
         banners: any;
         layoutBanners: any[];
-        records: any[];
-        facets: any[];
-    }>;
-    applyFilter(key: string, value: any): Promise<{
-        state: {
-            filters: Record<string, any[]>;
-            sort_by: string;
-            skip: string;
-            limit: string;
-        } & {
-            slug: string;
-        };
-        search_metadata: {
-            start: number;
-            end: any;
-            total: any;
-            page: number;
-            x_request_id: string;
-            did_you_mean: never[];
-            is_from_fallback: any;
-        };
-        collection_content: any;
-        banners: any;
-        layoutBanners: any[];
-        records: any[];
-        facets: any[];
-    }>;
-    removeFilter(key: string, value: any): Promise<{
-        state: {
-            filters: Record<string, any[]>;
-            sort_by: string;
-            skip: string;
-            limit: string;
-        } & {
-            slug: string;
-        };
-        search_metadata: {
-            start: number;
-            end: any;
-            total: any;
-            page: number;
-            x_request_id: string;
-            did_you_mean: never[];
-            is_from_fallback: any;
-        };
-        collection_content: any;
-        banners: any;
-        layoutBanners: any[];
-        records: any[];
-        facets: any[];
-    }>;
-    clearFilters(): Promise<{
-        state: {
-            filters: Record<string, any[]>;
-            sort_by: string;
-            skip: string;
-            limit: string;
-        } & {
-            slug: string;
-        };
-        search_metadata: {
-            start: number;
-            end: any;
-            total: any;
-            page: number;
-            x_request_id: string;
-            did_you_mean: never[];
-            is_from_fallback: any;
-        };
-        collection_content: any;
-        banners: any;
-        layoutBanners: any[];
-        records: any[];
-        facets: any[];
-    }>;
-    applySort(sortBy: string): Promise<{
-        state: {
-            filters: Record<string, any[]>;
-            sort_by: string;
-            skip: string;
-            limit: string;
-        } & {
-            slug: string;
-        };
-        search_metadata: {
-            start: number;
-            end: any;
-            total: any;
-            page: number;
-            x_request_id: string;
-            did_you_mean: never[];
-            is_from_fallback: any;
-        };
-        collection_content: any;
-        banners: any;
-        layoutBanners: any[];
-        records: any[];
-        facets: any[];
-    }>;
-    setPage(page: string | number): Promise<{
-        state: {
-            filters: Record<string, any[]>;
-            sort_by: string;
-            skip: string;
-            limit: string;
-        } & {
-            slug: string;
-        };
-        search_metadata: {
-            start: number;
-            end: any;
-            total: any;
-            page: number;
-            x_request_id: string;
-            did_you_mean: never[];
-            is_from_fallback: any;
-        };
-        collection_content: any;
-        banners: any;
-        layoutBanners: any[];
-        records: any[];
-        facets: any[];
-    }>;
-    setPageSize(pageSize: string | number): Promise<{
-        state: {
-            filters: Record<string, any[]>;
-            sort_by: string;
-            skip: string;
-            limit: string;
-        } & {
-            slug: string;
-        };
-        search_metadata: {
-            start: number;
-            end: any;
-            total: any;
-            page: number;
-            x_request_id: string;
-            did_you_mean: never[];
-            is_from_fallback: any;
-        };
-        collection_content: any;
-        banners: any;
-        layoutBanners: any[];
-        records: any[];
-        facets: any[];
-    }>;
-    reset(slug?: string): Promise<{
-        state: {
-            filters: Record<string, any[]>;
-            sort_by: string;
-            skip: string;
-            limit: string;
-        } & {
-            slug: string;
-        };
-        search_metadata: {
-            start: number;
-            end: any;
-            total: any;
-            page: number;
-            x_request_id: string;
-            did_you_mean: never[];
-            is_from_fallback: any;
-        };
-        collection_content: any;
-        banners: any;
-        layoutBanners: any[];
-        records: any[];
-        facets: any[];
     }>;
 }
 
