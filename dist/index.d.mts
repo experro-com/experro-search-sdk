@@ -1,4 +1,11 @@
 declare class Analytics {
+    /**
+     * Holds event payloads that arrived before analytics was ready.
+     * Flushed all at once inside triggerDefaultAnalyticsEvent — no DOM
+     * listeners are added for individual events; there is always at most
+     * zero additional EventListeners on the document.
+     */
+    private _pendingEvents;
     injectAnalyticsScript(): void;
     triggerDefaultAnalyticsEvent: () => Promise<void>;
     initAnalytics(): void;
@@ -524,6 +531,8 @@ declare class Autocomplete {
     private getDebounceTime;
     private fetchData;
     private fetch;
+    private getPopularSearches;
+    getPlaceholderTerms(): Promise<any>;
     search(query: string): Promise<Record<string, any>>;
     searchSuggestions(query: string): Promise<Record<string, any>>;
     searchProducts(query: string): Promise<Record<string, any>>;
