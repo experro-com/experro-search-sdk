@@ -360,7 +360,10 @@ declare class Layout {
         banners: any;
         layoutBanners: any[];
     }>;
-    applyFilter(key: string, value: any): Promise<{
+    applyFilter(key: string, value: string | {
+        min?: string;
+        max?: string;
+    }): Promise<{
         state: any;
         search_metadata: {
             start: number;
